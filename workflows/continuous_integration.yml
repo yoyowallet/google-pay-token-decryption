@@ -28,6 +28,9 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
     - name: Run pre-commit
       uses: pre-commit/action@v2.0.0
+    - name: Run mypy
+      run: |
+        poetry run mypy google_pay_token_decryption tests
     - name: Test with pytest
       run: |
         poetry run pytest
