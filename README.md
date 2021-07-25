@@ -30,7 +30,6 @@ root_signing_keys = [{
 recipient_id = "someRecipient"
 private_key = "MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgCPSuFr4iSIaQprjjchHPyDu2NXFe0vDBoTpPkYaK9dehRANCAATnaFz/vQKuO90pxsINyVNWojabHfbx9qIJ6uD7Q7ZSxmtyo/Ez3/o2kDT8g0pIdyVIYktCsq65VoQIDWSh2Bdm"
 decryptor = GooglePayTokenDecryptor(root_signing_keys, recipient_id, private_key)
-decryptor = GooglePayTokenDecryptor(root_signing_keys, recipient_id, private_key)
 
 # Verify and decrypt a token 
 encrypted_token = {
