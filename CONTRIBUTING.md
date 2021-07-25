@@ -6,8 +6,9 @@ System dependencies:
 - Python 3.8+
 - [Python Poetry](https://python-poetry.org/docs/)
 
-1. Create a virtual environment.
-2. Run `poetry install` to install the package.
+Installation:
+1. Create a new Python virtual environment.
+2. Run `poetry install` to install the package locally.
 
 ## Tests
 
