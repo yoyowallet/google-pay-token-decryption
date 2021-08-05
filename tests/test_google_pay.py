@@ -3,10 +3,9 @@ from contextlib import contextmanager
 
 import pytest
 
+from google_pay_token_decryption import GooglePayError, GooglePayTokenDecryptor
 from google_pay_token_decryption.google_pay import (
     ECv2_PROTOCOL_VERSION,
-    GooglePayError,
-    GooglePayTokenDecryptor,
     check_expiration_date_is_valid,
 )
 
