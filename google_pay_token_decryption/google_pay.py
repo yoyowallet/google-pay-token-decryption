@@ -82,7 +82,8 @@ class GooglePayTokenDecryptor:
         :param root_signing_keys: Google root signing keys
             (see https://developers.google.com/pay/api/android/guides/resources/payment-data-cryptography#root-signing-keys).
         :param recipient_id: "merchant:merchantId" where the merchantId matches
-            the value found in the Google Pay Business Console.
+            the value found in the Google Pay Business Console. In Google's test environment
+            this value is always "merchant:12345678901234567890".
         :param private_key: Base64-encoded private key corresponding to the public
             key submitted to the Google Pay console for the merchant.
         """

@@ -12,7 +12,7 @@ A Python package to decrypt Google Pay tokens according to the [Google Pay docs]
 
 2. Get latest Google root signing keys [here](https://developers.google.com/pay/api/android/guides/resources/payment-data-cryptography#root-signing-keys).
 
-3. Get your merchant ID/recipient ID from the [Google Pay business console](https://pay.google.com/business/console).
+3. Get your **merchant ID/recipient ID** from the [Google Pay business console](https://pay.google.com/business/console). It should be in the format "merchant:<your merchant ID>". In Google's test environment it is always "merchant:12345678901234567890".
 
 4. Generate your merchant private and public keys by following [this documentation](https://developers.google.com/pay/api/android/guides/resources/payment-data-cryptography#using-openssl).
 
