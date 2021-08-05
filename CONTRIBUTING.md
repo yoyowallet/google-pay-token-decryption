@@ -57,6 +57,18 @@ mypy google_pay_token_decryption tests
 
 2. Bump the version number (following [semantic versioning](https://semver.org/)):
 
-```
+```bash
 bump2version < either: major / minor / patch >
+```
+
+3. Build the package using Poetry:
+
+```bash
+poetry build
+```
+
+4. Publish the package to [PyPI](pypi.org/) using Poetry:
+
+```bash
+poetry publish
 ```
