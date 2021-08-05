@@ -16,7 +16,7 @@ A Python package to decrypt Google Pay tokens according to the [Google Pay docs]
 
 4. Generate your merchant private and public keys by following [this documentation](https://developers.google.com/pay/api/android/guides/resources/payment-data-cryptography#using-openssl).
 
-5. Create a new `GooglePayTokenDecryptor` object and decrypt a token using the `verify_and_decrypt_token` method:
+5. Create a new `GooglePayTokenDecryptor` object and decrypt a token using the `decrypt_token` method:
 
 ```python
 from google_pay_token_decryption.google_pay import GooglePayTokenDecryptor
@@ -43,7 +43,7 @@ encrypted_token = {
     "protocolVersion": "ECv2",
     "signedMessage": "{\"encryptedMessage\":\"PeYi+ZnJs1Gei1dSOkItdfFG8Y81FvEI7dHE0sSrSU6OPnndftV/qDbbmXHmppoyP/2lhF+XsH93qzD3u46BRnxxPtetzGT0533rIraskTj8SZ6FVYY1Opfo7FECGk57FfF8aDaCSOoyTh1k0v6wdxVwEVvWqG1T/ij+u2KWOw5G1WSB/RVicni0Az13ModYb0KMdMws1USKlWxBfKU5PtxibVx4fZ95HYQ82qgHlV4ToKaUY7YWud1iEspmFsBMk0nh4t1hVxRzsxKUjMV1915qD5yq7k5n9YPao2mR9NJgLPDktsc4uf9bszzvnqhz3T1YID43QwX16yCyn/YxNVe3dJ1+S+BGyJ+vyKXp+Zh4SlIua2NFLwnR06Es3Kvl6LlOGasoPC/tMAWYLQlGsl+vHK3mrMZjC6KbOsXg+2mrlZwL+QOt3ih2jIPe\",\"ephemeralPublicKey\":\"BD6pQKpy7yDebAX4qV0u/AfMYNQhOD+teyoa/5SsxwTGCoC1ZKHxNMb5BXvRmBcYGPNTx8+fAkEwzJ8GqbX/Q7E=\",\"tag\":\"8gFteCvCuamX1RmL7ORdHqleyBf0N55OfAs80RYGgwc=\"}"
 }
-decrypted_token = decryptor.verify_and_decrypt_token(encrypted_token)
+decrypted_token = decryptor.decrypt_token(encrypted_token)
 print(decrypted_token)
 """
 {

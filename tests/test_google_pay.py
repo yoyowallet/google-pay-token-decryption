@@ -1,4 +1,5 @@
 import datetime
+from contextlib import contextmanager
 
 import pytest
 
@@ -15,6 +16,7 @@ def datetime_to_milliseconds(input_date: datetime.datetime):
 
 
 valid_signature = "MEQCIFBle+JsfsovRBeoFEYKWFAeBYFAhq0S+GtusiosjV4lAiAGcK9qfVpnqG6Hw8cbGBQ79beiAs6IIkBxBfeKDBR+kA=="
+invalid_signature = "invalid_signature"
 
 valid_root_signing_key = {
     "keyValue": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/1+3HBVSbdv+j7NaArdgMyoSAM43yRydzqdg1TxodSzA96Dj4Mc1EiKroxxunavVIvdxGnJeFViTzFvzFRxyCw==",
@@ -25,6 +27,10 @@ valid_root_signing_key = {
 
 @pytest.fixture
 def encrypted_token():
+    """
+    Test tokens generated using the Tink test code:
+    https://github.com/google/tink/blob/06aa21432e1985fea4ab26c26f6038895b22cce0/apps/paymentmethodtoken/src/test/java/com/google/crypto/tink/apps/paymentmethodtoken/PaymentMethodTokenRecipientTest.java#L1042-L1059
+    """
     return {
         "signature": "MEYCIQCbtFh9UIf1Ty3NKZ2z0ZmL0SHwR30uiRGuRXk9ghpyrwIhANiZQ0Df6noxkQ6M652PcIPkk2m1PQhqiq4UhzvPQOYf",
         "intermediateSigningKey": {
@@ -34,6 +40,12 @@ def encrypted_token():
         "protocolVersion": "ECv2",
         "signedMessage": '{"encryptedMessage":"PeYi+ZnJs1Gei1dSOkItdfFG8Y81FvEI7dHE0sSrSU6OPnndftV/qDbbmXHmppoyP/2lhF+XsH93qzD3u46BRnxxPtetzGT0533rIraskTj8SZ6FVYY1Opfo7FECGk57FfF8aDaCSOoyTh1k0v6wdxVwEVvWqG1T/ij+u2KWOw5G1WSB/RVicni0Az13ModYb0KMdMws1USKlWxBfKU5PtxibVx4fZ95HYQ82qgHlV4ToKaUY7YWud1iEspmFsBMk0nh4t1hVxRzsxKUjMV1915qD5yq7k5n9YPao2mR9NJgLPDktsc4uf9bszzvnqhz3T1YID43QwX16yCyn/YxNVe3dJ1+S+BGyJ+vyKXp+Zh4SlIua2NFLwnR06Es3Kvl6LlOGasoPC/tMAWYLQlGsl+vHK3mrMZjC6KbOsXg+2mrlZwL+QOt3ih2jIPe","ephemeralPublicKey":"BD6pQKpy7yDebAX4qV0u/AfMYNQhOD+teyoa/5SsxwTGCoC1ZKHxNMb5BXvRmBcYGPNTx8+fAkEwzJ8GqbX/Q7E=","tag":"8gFteCvCuamX1RmL7ORdHqleyBf0N55OfAs80RYGgwc="}',
     }
+
+
+@pytest.fixture
+def encrypted_token_with_invalid_signature(encrypted_token):
+    encrypted_token["intermediateSigningKey"]["signatures"] = [invalid_signature]
+    return encrypted_token
 
 
 encrypted_expired_token = {
@@ -83,6 +95,11 @@ decrypted_google_pay_token = {
         "authMethod": "PAN_ONLY",
     },
 }
+
+
+@contextmanager
+def does_not_raise():
+    yield
 
 
 @pytest.fixture
@@ -244,15 +261,48 @@ class TestGooglePayTokenDecryptor(object):
         ):
             google_pay_token_decryptor.verify_signature(encrypted_token)
 
+    @pytest.mark.parametrize(
+        ("verify"),
+        [True, False],
+    )
     def test_decrypt_token__success(
         self,
         encrypted_token,
         google_pay_token_decryptor,
+        verify,
     ):
         assert (
-            google_pay_token_decryptor.verify_and_decrypt_token(encrypted_token)
+            google_pay_token_decryptor.decrypt_token(encrypted_token, verify)
             == decrypted_google_pay_token
         )
+
+    @pytest.mark.parametrize(
+        ("verify", "expectation"),
+        [
+            (False, does_not_raise()),
+            (
+                True,
+                pytest.raises(
+                    Exception,
+                    match="Could not verify intermediate signing key signature",
+                ),
+            ),
+        ],
+    )
+    def test_decrypt_token_with_invalid_signature(
+        self,
+        encrypted_token_with_invalid_signature,
+        google_pay_token_decryptor,
+        verify,
+        expectation,
+    ):
+        with expectation:
+            assert (
+                google_pay_token_decryptor.decrypt_token(
+                    encrypted_token_with_invalid_signature, verify
+                )
+                == decrypted_google_pay_token
+            )
 
     @pytest.mark.parametrize(
         ("encrypted_token", "reason"),
@@ -269,7 +319,7 @@ class TestGooglePayTokenDecryptor(object):
         self, google_pay_token_decryptor, encrypted_token, reason
     ):
         with pytest.raises(GooglePayError, match=reason):
-            google_pay_token_decryptor.verify_and_decrypt_token(encrypted_token)
+            google_pay_token_decryptor.decrypt_token(encrypted_token)
 
 
 @pytest.mark.parametrize(

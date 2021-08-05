@@ -94,16 +94,20 @@ class GooglePayTokenDecryptor:
         self.recipient_id = recipient_id
         self.private_key = load_private_key(private_key)
 
-    def verify_and_decrypt_token(self, data: Dict) -> Dict:
+    def decrypt_token(self, data: Dict, verify: bool = True) -> Dict:
         """
         Verifies the signature of a Google token and decrypts it according to
         the docs:
         https://developers.google.com/pay/api/android/guides/resources/payment-data-cryptography#decrypt-token
 
         :param dict: The encrypted token.
+        :param verify: Whether the signature of the token should be verified (recommended) or not.
         :returns dict: The decrypted token.
+
+        :raises Exception: if the token could not be verified or decrypted.
         """
-        self.verify_signature(data)
+        if verify:
+            self.verify_signature(data)
 
         signed_message = json.loads(data["signedMessage"])
         for k in ["ephemeralPublicKey", "tag", "encryptedMessage"]:
