@@ -11,4 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-TODO
+Initial release that implements Google Pay token decryption and signature verification for ECv2 tokens.
