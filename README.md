@@ -19,7 +19,7 @@ A Python package to decrypt Google Pay tokens according to the [Google Pay docs]
 5. Create a new `GooglePayTokenDecryptor` object and decrypt a token using the `decrypt_token` method:
 
 ```python
-from google_pay_token_decryption.google_pay import GooglePayTokenDecryptor
+from google_pay_token_decryption import GooglePayTokenDecryptor
 
 # Instantiate using the a list of root signing keys, your recipient ID and private key
 root_signing_keys = [{
