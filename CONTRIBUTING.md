@@ -61,13 +61,19 @@ mypy google_pay_token_decryption tests
 bump2version < either: major / minor / patch >
 ```
 
-3. Build the package using Poetry:
+3. Push the changes up to the `master` branch (including the tags):
+
+```
+git push --tags origin HEAD:master
+```
+
+4. Build the package using Poetry:
 
 ```bash
 poetry build
 ```
 
-4. Publish the package to [PyPI](pypi.org/) using Poetry:
+5. Publish the package to [PyPI](pypi.org/) using Poetry:
 
 ```bash
 poetry publish
